@@ -1,4 +1,4 @@
-const { DOMParser } = require("xmldom");
+const { DOMParser } = require('xmldom');
 
 const isValidXHTML = (text) => {
   let error = null;
@@ -7,7 +7,7 @@ const isValidXHTML = (text) => {
     console.log(e);
     error = e;
   };
-  parser.parseFromString(text, "text/xhtml");
+  parser.parseFromString(text, 'text/xhtml');
   return !error;
 };
 const hasMatchingChars = (text, inChar, outChar) => {
@@ -30,12 +30,12 @@ const trim = (text) => {
   while (true) {
     text = newText;
     newText = newText.trim();
-    newText = newText.replace(/\<br\/\>$/g, "");
-    newText = newText.replace(/\<br \/\>$/g, "");
-    newText = newText.replace(/\<br\>\<\/br\>$/g, "");
-    newText = newText.replace(/^\<br\/\>/g, "");
-    newText = newText.replace(/^\<br \/\>/g, "");
-    newText = newText.replace(/^\<br\>\<\/br\>/g, "");
+    newText = newText.replace(/\<br\/\>$/g, '');
+    newText = newText.replace(/\<br \/\>$/g, '');
+    newText = newText.replace(/\<br\>\<\/br\>$/g, '');
+    newText = newText.replace(/^\<br\/\>/g, '');
+    newText = newText.replace(/^\<br \/\>/g, '');
+    newText = newText.replace(/^\<br\>\<\/br\>/g, '');
     if (newText === text) {
       break;
     }
@@ -44,15 +44,13 @@ const trim = (text) => {
 };
 const split = (text) => {
   text = text.trim();
-  const tokenized = text.split(
-    /(\. |\? |! |\<br \/\>|\<br\/\>|\<br\>\<\/br\>)/g
-  );
+  const tokenized = text.split(/(\. |\? |! |\<br \/\>|\<br\/\>|\<br\>\<\/br\>)/g);
   let length = 0;
 
   const index = tokenized.findIndex((sentence, index) => {
     length += sentence.length;
 
-    const innerWords = sentence.split(" ");
+    const innerWords = sentence.split(' ');
     const lastWord = innerWords[innerWords.length - 1];
     const nextSentence = tokenized[index + 1];
 
@@ -66,7 +64,7 @@ const split = (text) => {
       lastWord.toLowerCase() !== lastWord &&
       lastWord.length < 5 &&
       nextSentence &&
-      !nextSentence.startsWith("<")
+      !nextSentence.startsWith('<')
     ) {
       return false;
     }
@@ -76,16 +74,16 @@ const split = (text) => {
     if (!isValidXHTML(text.substring(length))) {
       return false;
     }
-    if (!hasMatchingChars(text.substring(0, length), "(", ")")) {
+    if (!hasMatchingChars(text.substring(0, length), '(', ')')) {
       return false;
     }
-    if (!hasMatchingChars(text.substring(0, length), "<", ">")) {
+    if (!hasMatchingChars(text.substring(0, length), '<', '>')) {
       return false;
     }
-    if (!hasMatchingChars(text.substring(0, length), "[", "]")) {
+    if (!hasMatchingChars(text.substring(0, length), '[', ']')) {
       return false;
     }
-    if (!hasMatchingChars(text.substring(0, length), "{", "}")) {
+    if (!hasMatchingChars(text.substring(0, length), '{', '}')) {
       return false;
     }
     if (!hasMatchingChars(text.substring(0, length), '"', '"')) {
@@ -95,7 +93,7 @@ const split = (text) => {
   });
 
   if (index >= 0) {
-    const first = tokenized.slice(0, index + 2).join("");
+    const first = tokenized.slice(0, index + 2).join('');
     const second = text.substring(first.length);
     return {
       description: trim(first),
@@ -104,35 +102,58 @@ const split = (text) => {
   } else {
     return {
       description: text,
-      descriptionMore: "",
+      descriptionMore: '',
     };
   }
 };
-module.exports.IMAGES_EXTENSION = ["jpeg", "jpg", "png", "tif", "tiff"];
+module.exports.IMAGES_EXTENSION = ['jpeg', 'jpg', 'png', 'tif', 'tiff'];
+module.exports.IGNORE_WORD = [
+  '',
+  'in',
+  'on',
+  'at',
+  'the',
+  'of',
+  'is',
+  'am',
+  'are',
+  'and',
+  'by',
+  'for',
+  'a',
+];
+module.exports.CC0_TAGS = [
+  'photo',
+  'image',
+  'cc0',
+  'creative commons',
+  'creative commons 0',
+  'public domain',
+];
 module.exports.splitText = split;
 module.exports.stockphotoTags = [
-  "Shutterstock",
-  "Getty",
-  "iStock",
-  "Stocksy",
-  "Depositphotos",
-  "Dreamstime",
-  "Envato",
-  "Adobe",
-  "Pixabay",
-  "Pexels",
-  "Unsplash",
-  "123rf",
-  "bigstock",
-  "alamy",
-  "stocksnap",
-  "canva",
-  "offset",
-  "pound5",
-  "snappa",
-  "reuters",
-  "AP ",
-  "eyeem",
-  "Yourworkforthem",
-  "Creative Market",
+  'Shutterstock',
+  'Getty',
+  'iStock',
+  'Stocksy',
+  'Depositphotos',
+  'Dreamstime',
+  'Envato',
+  'Adobe',
+  'Pixabay',
+  'Pexels',
+  'Unsplash',
+  '123rf',
+  'bigstock',
+  'alamy',
+  'stocksnap',
+  'canva',
+  'offset',
+  'pound5',
+  'snappa',
+  'reuters',
+  'AP ',
+  'eyeem',
+  'Yourworkforthem',
+  'Creative Market',
 ];
