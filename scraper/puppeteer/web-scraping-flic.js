@@ -17,7 +17,7 @@ const domains_in_blacklist = [
   'cc.adingo.jp',
   'unitedstateslibraryofcongress.demdex.net',
 ];
-(async (url = 'https://www.flickr.com/photos/nasacommons/9460192910/', config = {}) => {
+(async (url = 'https://www.flickr.com/photos/elmsn/52105268831/', config = {}) => {
   const requests_blocked = [];
   var projectTags = ['#pdgroupflickrnasa1'];
   var internalTags = [];
@@ -122,35 +122,36 @@ const domains_in_blacklist = [
   }
   console.log(licenseText);
   console.log(data.internalTags);
-  // // Get author tags and link
-  // console.log("Get Author Link");
-  // let rawAuthorLink = "";
-  // let rawAuthorText = "";
-  // try {
-  //   rawAuthorLink = await page.evaluate(
-  //     "document.querySelector('.attribution-info a.owner-name') ? document.querySelector('.attribution-info a.owner-name').getAttribute('href') : ''"
-  //   );
-  //   rawAuthorText = await page.evaluate(
-  //     "document.querySelector('.attribution-info .owner-name').innerText"
-  //   );
-  // } catch (error) {
-  //   console.log(error);
-  // }
-  // if (rawAuthorLink && rawAuthorLink.startsWith("/")) {
-  //   rawAuthorLink = `https://www.flickr.com${rawAuthorLink}`;
-  // }
-  // data.authorLink = rawAuthorLink && rawAuthorLink.length ? rawAuthorLink : "";
+  // Get author tags and link
+  console.log('Get Author Link');
+  let rawAuthorLink = '';
+  let rawAuthorText = '';
+  try {
+    rawAuthorLink = await page.evaluate(
+      "document.querySelector('.attribution-info a.owner-name') ? document.querySelector('.attribution-info a.owner-name').getAttribute('href') : ''"
+    );
+    rawAuthorText = await page.evaluate(
+      "document.querySelector('.attribution-info .owner-name').innerText"
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  if (rawAuthorLink && rawAuthorLink.startsWith('/')) {
+    rawAuthorLink = `https://www.flickr.com${rawAuthorLink}`;
+  }
+  data.authorLink = rawAuthorLink && rawAuthorLink.length ? rawAuthorLink : '';
 
-  // data.authorTags = rawAuthorText.length
-  //   ? [
-  //       `#${rawAuthorText
-  //         .trim()
-  //         .toLowerCase()
-  //         .replace(new RegExp("[^a-z0-9]", "gi"), "")
-  //         .replace(new RegExp(" ", "gi"), "")
-  //         .trim()}`,
-  //     ]
-  //   : [];
+  data.authorTags = rawAuthorText.length
+    ? [
+        `#${rawAuthorText
+          .trim()
+          .toLowerCase()
+          .replace(new RegExp('[^a-z0-9]', 'gi'), '')
+          .replace(new RegExp(' ', 'gi'), '')
+          .trim()}`,
+      ]
+    : [];
+  console.log('data.authorTags', data.authorTags);
   // console.log("Get Description");
   // data.description = "";
   // data.description_more = "";
