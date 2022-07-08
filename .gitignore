@@ -13,7 +13,6 @@ Icon
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
-.data
 .fseventsd
 .Spotlight-V100
 .TemporaryItems
@@ -72,6 +71,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+data/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
