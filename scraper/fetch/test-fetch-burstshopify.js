@@ -1,19 +1,18 @@
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const fileType = require("file-type");
-const FormData = require("form-data");
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const fileType = require('file-type');
+const FormData = require('form-data');
 
 const downloadFile = async (url) => {
   // @ts-ignore
   const response = await fetch(url);
-  const contentType = await response.headers.get("content-type");
+  const contentType = await response.headers.get('content-type');
   var buffer = await response.buffer();
-  const checksvg = contentType.toString().replace("+xml", "");
+  const checksvg = contentType.toString().replace('+xml', '');
   console.log(checksvg);
-  const imageExtension = checksvg.split("/");
+  const imageExtension = checksvg.split('/');
   console.log(imageExtension[0]);
-  if (imageExtension[0] != "image") {
-    console.log("error");
+  if (imageExtension[0] != 'image') {
+    console.log('error');
   }
   // console.log(contentType);
   // const imageType = (await fileType.fromBuffer(buffer)) || {
@@ -60,11 +59,9 @@ const downloadFile = async (url) => {
 //   return result;
 // };
 
-downloadFile("https://openclipart.org/download/302799").then(
-  ([imageBuffer, imageMetadata]) => {
-    console.log(imageBuffer);
-    // console.log(extension);
-    // console.log("newextension", newextension);
-    console.log(imageMetadata);
-  }
-);
+downloadFile('https://6.api.artsmia.org/800/76.jpg').then(([imageBuffer, imageMetadata]) => {
+  console.log(imageBuffer);
+  // console.log(extension);
+  // console.log("newextension", newextension);
+  console.log(imageMetadata);
+});
