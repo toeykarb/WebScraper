@@ -1,4 +1,5 @@
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const fileType = require("file-type");
 const https = require("https");
 const { lowerFirst } = require("lodash");
@@ -72,8 +73,25 @@ let pushtoTags = async (tags, keywordArr) => {
     tags.push(...keywordArr);
   }
 };
-
-(async (url = "https://www.slam.org/collection/objects/54962/", config = {}) => {
+/**
+ * @param {import('puppeteer').Page} page
+ */
+const waitForSelector = async (page, yourSelector, timeout) => {
+  try {
+    await page.waitForFunction(
+      `document.querySelector('${yourSelector}').clientHeight != 0`,
+      {
+        timeout,
+      }
+    );
+  } catch (e) {
+    // ignore
+  }
+};
+(async (
+  url = "https://www.slam.org/collection/objects/54962/",
+  config = {}
+) => {
   const requests_blocked = [];
 
   const browser = await puppeteer.launch();
@@ -82,9 +100,10 @@ let pushtoTags = async (tags, keywordArr) => {
   page.on("console", (consoleObj) => console.log(consoleObj.text()));
 
   await page.goto(url, { waitUntil: "networkidle2" });
+  await page.setViewport({ width: 1200, height: 600, deviceScaleFactor: 1 });
   console.log("Start......");
   await page.waitForTimeout(3000);
-
+  await waitForSelector(page, ".rights-and-access-content", 2000);
   let tags = [];
   const data = {
     url,
@@ -115,7 +134,8 @@ let pushtoTags = async (tags, keywordArr) => {
     return getLicenseText;
   });
   console.log("licenseText", licenseText);
-  data.isCC0 = licenseText.includes("public domain") || licenseText.includes("cc0");
+  data.isCC0 =
+    licenseText.includes("public domain") || licenseText.includes("cc0");
   if (data.isCC0) {
     data.internalTags.push("#nolicenseissue");
     data.internalTags.push("#slam");
@@ -125,13 +145,21 @@ let pushtoTags = async (tags, keywordArr) => {
   data.imageLink = await page.evaluate(
     "document.querySelector(`.viewer-download-buttons [title='Download']`) ? document.querySelector(`.viewer-download-buttons [title='Download']`).getAttribute('href') : '';"
   );
-  [imageBuffer, imageMetadata, imageExtension] = await downloadFile(data.imageLink);
+  [imageBuffer, imageMetadata, imageExtension] = await downloadFile(
+    data.imageLink
+  );
   console.log(imageBuffer);
   console.log(imageExtension);
 
   // get author
   let rawAuthorText = [];
-  const authorKeyword = ["artist", "printer", "maker", "designer", "photographer"];
+  const authorKeyword = [
+    "artist",
+    "printer",
+    "maker",
+    "designer",
+    "photographer",
+  ];
   for (var i = 0; i < authorKeyword.length; i++) {
     let authorSubject = authorKeyword[i];
     let getArstistTags = [];
@@ -140,10 +168,14 @@ let pushtoTags = async (tags, keywordArr) => {
       let artistIndex = [
         // @ts-ignore
         ...document.querySelectorAll(".mb-0 .mb-4 *"),
-      ].findIndex((node) => node.textContent.toLowerCase().trim() === authorSubject);
+      ].findIndex(
+        (node) => node.textContent.toLowerCase().trim() === authorSubject
+      );
       if (artistIndex !== -1) {
         // @ts-ignore
-        arrAtistTag = [...document.querySelectorAll(".mb-0 .mb-4 *")][artistIndex + 1].innerHTML
+        arrAtistTag = [...document.querySelectorAll(".mb-0 .mb-4 *")][
+          artistIndex + 1
+        ].innerHTML
           .toLowerCase()
           .replace("photographed by", "")
           .replaceAll("<br>or", ",")
@@ -201,7 +233,11 @@ let pushtoTags = async (tags, keywordArr) => {
   let getDesigned = await getEachSubject(page, "DESIGNED");
   if (getDesigned?.length) {
     getDesigned = getDesigned.map((a) =>
-      a.trim().replace("designed in", "").replace(new RegExp("  ", "gi"), " ").trim()
+      a
+        .trim()
+        .replace("designed in", "")
+        .replace(new RegExp("  ", "gi"), " ")
+        .trim()
     );
     console.log("getDesigned", getDesigned);
     await pushtoTags(tags, getDesigned);
@@ -224,14 +260,6 @@ let pushtoTags = async (tags, keywordArr) => {
     console.log("getMadeIn", getMadeIn);
     await pushtoTags(tags, getMadeIn);
   }
-  // let getPossiblyMadeIn = await getEachSubject(page, "possibly made in");
-  // if (getPossiblyMadeIn?.length) {
-  //   getPossiblyMadeIn = getPossiblyMadeIn.map((a) =>
-  //     a.trim().replace("possibly made in", "").replace(new RegExp("  ", "gi"), " ").trim()
-  //   );
-  //   console.log("getPossiblyMadeIn", getPossiblyMadeIn);
-  //   await pushtoTags(tags, getPossiblyMadeIn);
-  // }
 
   let getAssociated = await getEachSubject(page, "ASSOCIATED");
   if (getAssociated?.length) {
@@ -250,7 +278,11 @@ let pushtoTags = async (tags, keywordArr) => {
   let getPhotographedIn = await getEachSubject(page, "PHOTOGRAPHED IN");
   if (getPhotographedIn?.length) {
     getPhotographedIn = getPhotographedIn.map((a) =>
-      a.trim().replace("photographed in", "").replace(new RegExp("  ", "gi"), " ").trim()
+      a
+        .trim()
+        .replace("photographed in", "")
+        .replace(new RegExp("  ", "gi"), " ")
+        .trim()
     );
     console.log("getPhotographedIn", getPhotographedIn);
     await pushtoTags(tags, getPhotographedIn);
@@ -290,10 +322,14 @@ let pushtoTags = async (tags, keywordArr) => {
   console.log("getPeriod", getPeriod);
   await pushtoTags(tags, getPeriod);
 
-  let getDepicted = await getEachSubject(page, "DEPICTS");
+  let getDepicted = await getEachSubject(page, "DEPICT");
   if (getDepicted?.length) {
     getDepicted = getDepicted.map((a) =>
-      a.trim().replace("depicts", "").replace(new RegExp("  ", "gi"), " ").trim()
+      a
+        .trim()
+        .replace("depicts", "")
+        .replace(new RegExp("  ", "gi"), " ")
+        .trim()
     );
     console.log("getDepicted", getDepicted);
     await pushtoTags(tags, getDepicted);
@@ -316,7 +352,11 @@ let pushtoTags = async (tags, keywordArr) => {
   let getPrintedIn = await getEachSubject(page, "PRINTED IN");
   if (getPrintedIn?.length) {
     getPrintedIn = getPrintedIn.map((a) =>
-      a.trim().replace("printed in", "").replace(new RegExp("  ", "gi"), " ").trim()
+      a
+        .trim()
+        .replace("printed in", "")
+        .replace(new RegExp("  ", "gi"), " ")
+        .trim()
     );
     console.log("getPrintedIn", getPrintedIn);
     await pushtoTags(tags, getPrintedIn);
@@ -348,7 +388,11 @@ let pushtoTags = async (tags, keywordArr) => {
             .replace("possibly from", "")
             .replace(new RegExp("  ", "gi"), " ")
             .trim()
-        : a.trim().replace("possibly from", "").replace(new RegExp("  ", "gi"), " ").trim()
+        : a
+            .trim()
+            .replace("possibly from", "")
+            .replace(new RegExp("  ", "gi"), " ")
+            .trim()
     );
     console.log("getFrom", getFrom);
     await pushtoTags(tags, getFrom);
@@ -370,9 +414,6 @@ let pushtoTags = async (tags, keywordArr) => {
   console.log("getDate", getDate);
   await pushtoTags(tags, getDate);
 
-  // let getRight = await getEachSubject(page, "rights");
-  // console.log("getRight", getRight);
-  // await pushtoTags(tags, getRight);
   let getExcavatedIn = await getEachSubject(page, "EXCAVATED IN");
   console.log("getExcavatedIn", getExcavatedIn);
   await pushtoTags(tags, getExcavatedIn);
@@ -406,7 +447,9 @@ let pushtoTags = async (tags, keywordArr) => {
     let keywordDescription = data.description
       .replace(new RegExp("[^äöüÄÖÜßōéÉèa-z0-9]", "gi"), " ")
       .split(" ");
-    keywordDescription = keywordDescription.map((element) => element.toLowerCase().trim());
+    keywordDescription = keywordDescription.map((element) =>
+      element.toLowerCase().trim()
+    );
     const wordToDeleteSet = new Set(IGNORE_WORD);
     keywordDescription = keywordDescription.filter((word) => {
       if (word.length > 2) {
@@ -417,12 +460,21 @@ let pushtoTags = async (tags, keywordArr) => {
     data.tags.push(...keywordDescription);
   }
   tags.map((tag) =>
-    data.tags.push(tag.trim().replace(new RegExp("[^äöüÄÖÜßōéÉèa-z0-9_ ]", "gi"), ""))
+    data.tags.push(
+      tag.trim().replace(new RegExp("[^äöüÄÖÜßōéÉèa-z0-9_ ]", "gi"), "")
+    )
   );
   data.tags = Array.from(new Set(data.tags));
   // console.log("tags", tags);
 
   console.log(data);
+
+  await page.screenshot({
+    path: "slam.jpeg",
+    type: "jpeg",
+    fullPage: true,
+    quality: 50,
+  });
   await browser.close();
 })();
 
