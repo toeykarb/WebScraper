@@ -13,15 +13,15 @@ async function scraping(url) {
 
       var $ = cheerio.load(body);
 
-      var images = $(".item-description .item-description-title a");
+      var images = $(".item.col-md-3.col-sm-4.col-xs-6>.item-title>a");
 
       var imgStore = [];
       images.map(async (item) => {
         const link = images[item].attribs.href;
-
+        // let deleteZoom = link.replace("/zoom", "");
         imgStore.push(link);
       });
-      setTimeout(() => resolve(imgStore), 500);
+      setTimeout(() => resolve(imgStore), 1000);
     });
   });
 }
@@ -53,8 +53,8 @@ async function main() {
   var i = 1;
   var result = [];
 
-  while (i <= 146) {
-    var url = `https://www.loc.gov/collections/carol-m-highsmith/?fa=original-format:photo,+print,+drawing%7Conline-format:image&sb=date_desc&sp=${i}&st=gallery`;
+  while (i <= 429) {
+    var url = `https://www.webumenia.sk/en/katalog?has_image=1&is_free=1&years-range=1900%2C2022&page=${i}`;
 
     // } else {
     //   var url = `https://www.loc.gov/collections/national-photo-company/?c=200&fa=online-format:image&sp=2&st=grid`;
@@ -62,7 +62,7 @@ async function main() {
 
     var scrapingImg = await scraping(url);
     if (scrapingImg == false) {
-      console.log(`Error : ${url}`);
+      console.log(`\x1b[31m\x1b[43m Error : ${url}  \x1b[0m`);
     }
     result = [...result, ...scrapingImg];
     i++;
@@ -71,11 +71,14 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log(`All result : ${result.length}`);
-  const getNotDup = result.filter((value, index, self) => self.indexOf(value) === index);
+  const getNotDup = result.filter(
+    (value, index, self) => self.indexOf(value) === index
+  );
   console.log(`Unique result : ${getNotDup.length}`);
-  var json = JSON.stringify(getNotDup);
+  // var json = JSON.stringify(getNotDup);
+  var json = JSON.stringify(result);
   // console.log(json);
-  fs.writeFile("data/loc/artist/Carol-M.json", json, function (err) {
+  fs.writeFile("data/umenia/umenia-1900-2022.json", json, function (err) {
     if (err) {
       return console.log(err);
     }
