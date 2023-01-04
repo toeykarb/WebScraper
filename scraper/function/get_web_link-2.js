@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require("fs");
 function main(number) {
   var i = 1;
   let get_link = [];
@@ -16,7 +16,7 @@ function main(number) {
     i++;
   }
   var json = JSON.stringify(get_link);
-  fs.writeFile(`glitch-on-dam.json`, json, function (err) {
+  fs.writeFile(`smk-miss.json`, json, function (err) {
     if (err) {
       return console.log(err);
     }
@@ -24,4 +24,4 @@ function main(number) {
     console.log(`The file was saved!`);
   });
 }
-main(5);
+main(2);

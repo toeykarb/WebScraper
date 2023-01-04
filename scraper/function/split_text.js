@@ -1,107 +1,23 @@
-var fs = require('fs');
+var fs = require("fs");
 
 function main() {
-  var strArray = [
-    '2022-07-04T08:17:48.089Z	355179a0-819f-5645-83e0-229c25d767c3	INFO	CC0 ignored - https://collections.artsmia.org/art/1818/the-gossip-thomas-wilmer-dewing',
-    '2022-07-04T08:08:53.101Z	aa48a79d-b1d7-5216-b23d-fca113eba1d5	INFO	CC0 ignored - https://collections.artsmia.org/art/1785/journey-of-the-magi-james-tissot',
-    '2022-07-04T08:08:46.876Z	10124f62-2802-5fc7-b464-145e8a41c337	INFO	CC0 ignored - https://collections.artsmia.org/art/2239/on-the-thames-james-tissot',
-    '2022-07-04T07:52:08.914Z	7c0fde73-902a-5f0e-ae43-854f0e602007	INFO	CC0 ignored - https://collections.artsmia.org/art/67610/grus-americana-ii-paul-pletka',
-    '2022-07-04T07:52:08.873Z	7d7569ae-1364-56fd-b7ca-32928d2e10fc	INFO	CC0 ignored - https://collections.artsmia.org/art/67690/sea-serpents-ann-mccoy',
-    '2022-07-04T07:52:06.675Z	37816959-8b72-50a6-b3c5-3265153f2dc1	INFO	CC0 ignored - https://collections.artsmia.org/art/67609/grus-americana-i-paul-pletka',
-    '2022-07-04T07:52:06.624Z	a81b5d47-26cc-5b95-9bb8-067bb8979c35	INFO	CC0 ignored - https://collections.artsmia.org/art/67688/sea-serpents-ann-mccoy',
-    '2022-07-04T07:52:02.673Z	37816959-8b72-50a6-b3c5-3265153f2dc1	INFO	CC0 ignored - https://collections.artsmia.org/art/57395/winter-twilight-wanda-gag',
-    '2022-07-04T07:52:02.546Z	a81b5d47-26cc-5b95-9bb8-067bb8979c35	INFO	CC0 ignored - https://collections.artsmia.org/art/67689/sea-serpents-ann-mccoy',
-    '2022-07-04T07:45:03.875Z	9ffd7b1a-dc11-505b-8553-202640b5c7f9	INFO	CC0 ignored - https://collections.artsmia.org/art/7373/the-white-cat-francis-jourdain',
-    '2022-07-04T07:44:59.704Z	12b174f9-1f5c-54c3-8a0c-2fc583fe0b83	INFO	CC0 ignored - https://collections.artsmia.org/art/6955',
-    '2022-07-04T07:44:53.472Z	10944ae0-aa10-576d-8ad2-11dc36b5e127	INFO	CC0 ignored - https://collections.artsmia.org/art/40421',
-    '2022-07-04T07:44:51.852Z	6736657b-a5ad-56cd-9f43-3e47393118a1	INFO	CC0 ignored - https://collections.artsmia.org/art/40445',
-    '2022-07-04T07:44:51.518Z	ba9d80b2-9fb8-5159-b14a-db8e032e20ff	INFO	CC0 ignored - https://collections.artsmia.org/art/6970',
-    '2022-07-04T07:44:51.498Z	1c637d7b-297c-559f-a6ef-2647b5de13bd	INFO	CC0 ignored - https://collections.artsmia.org/art/40430',
-    '2022-07-04T07:44:47.385Z	316adae9-848f-5885-910e-81d518196f2c	INFO	CC0 ignored - https://collections.artsmia.org/art/40431',
-    '2022-07-04T07:44:47.324Z	ba9d80b2-9fb8-5159-b14a-db8e032e20ff	INFO	CC0 ignored - https://collections.artsmia.org/art/6982',
-    '2022-07-04T07:44:47.293Z	71851617-6e6a-5aa5-804b-4d2bf2c838c9	INFO	CC0 ignored - https://collections.artsmia.org/art/40885',
-    '2022-07-04T07:44:47.291Z	b934fe06-dc9a-5421-a796-a53a400745a9	INFO	CC0 ignored - https://collections.artsmia.org/art/40994',
-    '2022-07-04T07:44:47.235Z	1c637d7b-297c-559f-a6ef-2647b5de13bd	INFO	CC0 ignored - https://collections.artsmia.org/art/6985',
-    '2022-07-04T07:44:46.564Z	5ede5491-1983-565c-a1a4-0fad851fa1fe	INFO	CC0 ignored - https://collections.artsmia.org/art/6958',
-    '2022-07-04T07:44:45.415Z	b4b5e0a8-24f1-54e2-9d15-bb94b86df68e	INFO	CC0 ignored - https://collections.artsmia.org/art/6969',
-    '2022-07-04T07:44:45.385Z	dbd76111-5103-51fb-bca2-3a2dcd9fca3c	INFO	CC0 ignored - https://collections.artsmia.org/art/40592',
-    '2022-07-04T07:44:42.329Z	5ede5491-1983-565c-a1a4-0fad851fa1fe	INFO	CC0 ignored - https://collections.artsmia.org/art/40608',
-    '2022-07-04T07:44:41.151Z	b4b5e0a8-24f1-54e2-9d15-bb94b86df68e	INFO	CC0 ignored - https://collections.artsmia.org/art/40614',
-    '2022-07-04T07:44:41.141Z	dbd76111-5103-51fb-bca2-3a2dcd9fca3c	INFO	CC0 ignored - https://collections.artsmia.org/art/40433',
-    '2022-07-04T07:44:41.001Z	c9e3a657-336a-5c3a-b2e4-fd6baffd21dc	INFO	CC0 ignored - https://collections.artsmia.org/art/40963',
-    '2022-07-04T07:44:39.211Z	9ead0393-1e18-560f-b950-58af829bd38b	INFO	CC0 ignored - https://collections.artsmia.org/art/62844',
-    '2022-07-04T07:44:39.106Z	caad0916-c80a-5115-aff7-522a5480bc3d	INFO	CC0 ignored - https://collections.artsmia.org/art/40432',
-    '2022-07-04T07:44:38.956Z	08b768e2-f44f-5c73-9051-33de68d34a9b	INFO	CC0 ignored - https://collections.artsmia.org/art/62846',
-    '2022-07-04T07:44:36.661Z	aa94c131-06f6-5cdd-8e89-9a0d9a67bf78	INFO	CC0 ignored - https://collections.artsmia.org/art/62845',
-    '2022-07-04T07:44:34.975Z	9ead0393-1e18-560f-b950-58af829bd38b	INFO	CC0 ignored - https://collections.artsmia.org/art/5425',
-    '2022-07-04T07:44:34.940Z	caad0916-c80a-5115-aff7-522a5480bc3d	INFO	CC0 ignored - https://collections.artsmia.org/art/40425',
-    '2022-07-04T07:44:34.805Z	08b768e2-f44f-5c73-9051-33de68d34a9b	INFO	CC0 ignored - https://collections.artsmia.org/art/7130',
-    '2022-07-04T07:44:32.943Z	d5fd3ed5-6c91-5cce-bd43-65e9f0012120	INFO	CC0 ignored - https://collections.artsmia.org/art/6943',
-    '2022-07-04T07:44:32.717Z	69192590-1ce5-57fe-a655-7eac806c4c39	INFO	CC0 ignored - https://collections.artsmia.org/art/40429',
-    '2022-07-04T07:44:28.678Z	d5fd3ed5-6c91-5cce-bd43-65e9f0012120	INFO	CC0 ignored - https://collections.artsmia.org/art/40982',
-    '2022-07-04T07:44:28.648Z	52d06fac-ce83-5d25-88ae-349052064241	INFO	CC0 ignored - https://collections.artsmia.org/art/40435',
-    '2022-07-04T07:44:28.617Z	fd4cf750-068e-50ba-9d19-ac6c9a1e8f9c	INFO	CC0 ignored - https://collections.artsmia.org/art/40590',
-    '2022-07-04T07:44:28.564Z	69192590-1ce5-57fe-a655-7eac806c4c39	INFO	CC0 ignored - https://collections.artsmia.org/art/40929',
-    '2022-07-04T07:44:22.442Z	4302a0aa-853a-5f9f-a83d-fb9619b96c3a	INFO	CC0 ignored - https://collections.artsmia.org/art/40609',
-    '2022-07-04T07:44:22.432Z	57851f9d-9e2e-5244-b6d3-44a10253cfe6	INFO	CC0 ignored - https://collections.artsmia.org/art/40420',
-    '2022-07-04T07:44:22.264Z	8b3f9a9c-316d-5c40-82bb-c1a0ad105be2	INFO	CC0 ignored - https://collections.artsmia.org/art/40973',
-    '2022-07-04T07:44:17.297Z	e57f3c46-a8d7-5fd5-967c-677a34aa50f3	INFO	CC0 ignored - https://collections.artsmia.org/art/55981',
-    '2022-07-04T07:44:16.179Z	40961ab2-a8ae-5f6a-88df-418e34d97a2c	INFO	CC0 ignored - https://collections.artsmia.org/art/61835',
-    '2022-07-04T07:44:15.999Z	c44b74de-f433-58e3-91c1-2fe26842b505	INFO	CC0 ignored - https://collections.artsmia.org/art/113141',
-    '2022-07-04T07:44:09.813Z	aec2a2ff-57d6-5eb1-bf6d-f9c3cbabd197	INFO	CC0 ignored - https://collections.artsmia.org/art/6101',
-    '2022-07-04T07:44:08.010Z	86d0068a-8d4c-5794-b6d7-5db6113b29b2	INFO	CC0 ignored - https://collections.artsmia.org/art/8842',
-    '2022-07-04T07:44:07.847Z	86b855af-4fc7-54f0-98c5-0e93d3b072ba	INFO	CC0 ignored - https://collections.artsmia.org/art/108001',
-    '2022-07-04T07:44:07.802Z	45b2ce69-fd46-52fe-b182-95556137fcd8	INFO	CC0 ignored - https://collections.artsmia.org/art/40434',
-    '2022-07-04T07:44:06.230Z	4f2de6ff-93db-5102-a8e0-bdc30fbfe6a0	INFO	CC0 ignored - https://collections.artsmia.org/art/124150',
-    '2022-07-04T07:44:05.052Z	819c8bf5-8158-5bec-b79e-d0c91d327e0e	INFO	CC0 ignored - https://collections.artsmia.org/art/135745',
-    '2022-07-04T07:44:03.800Z	86d0068a-8d4c-5794-b6d7-5db6113b29b2	INFO	CC0 ignored - https://collections.artsmia.org/art/7936',
-    '2022-07-04T07:44:03.688Z	76c5af16-5cb0-52f8-8589-f42ac0d603d0	INFO	CC0 ignored - https://collections.artsmia.org/art/135747',
-    '2022-07-04T07:44:03.667Z	ec20e4b9-9485-56f2-816d-bf8508e4a0b8	INFO	CC0 ignored - https://collections.artsmia.org/art/7805',
-    '2022-07-04T07:44:03.597Z	86b855af-4fc7-54f0-98c5-0e93d3b072ba	INFO	CC0 ignored - https://collections.artsmia.org/art/12269',
-    '2022-07-04T07:44:03.597Z	3c638893-333d-5435-b784-d3afaf4cc994	INFO	CC0 ignored - https://collections.artsmia.org/art/135749',
-    '2022-07-04T07:44:03.528Z	45b2ce69-fd46-52fe-b182-95556137fcd8	INFO	CC0 ignored - https://collections.artsmia.org/art/3747',
-    '2022-07-04T07:44:03.453Z	b72e6a99-13cf-57a4-a892-31a58fa5ba06	INFO	CC0 ignored - https://collections.artsmia.org/art/135744',
-    '2022-07-04T07:44:01.583Z	07ebdd00-65cb-57d7-8aa5-863cf9a15291	INFO	CC0 ignored - https://collections.artsmia.org/art/135748',
-    '2022-07-04T07:43:59.065Z	b72e6a99-13cf-57a4-a892-31a58fa5ba06	INFO	CC0 ignored - https://collections.artsmia.org/art/136913',
-    '2022-07-04T07:43:57.356Z	07ebdd00-65cb-57d7-8aa5-863cf9a15291	INFO	CC0 ignored - https://collections.artsmia.org/art/135751',
-    '2022-07-04T07:43:55.552Z	502cf7d2-eb46-53fa-9115-acee7722d618	INFO	CC0 ignored - https://collections.artsmia.org/art/135750',
-    '2022-07-04T07:43:55.368Z	4d43c3f0-ff18-5ccb-b5ec-98cc637cfd6d	INFO	CC0 ignored - https://collections.artsmia.org/art/7373',
-    '2022-07-04T07:43:55.333Z	0b13741d-a552-5e61-be9a-2f21393673c0	INFO	CC0 ignored - https://collections.artsmia.org/art/3511',
-    '2022-07-04T07:43:52.910Z	e51b3177-6f1b-55b5-8106-6a4bf37b4b93	INFO	CC0 ignored - https://collections.artsmia.org/art/40977',
-    '2022-07-04T07:43:51.401Z	d7cf10e4-719a-57b9-8b3e-4bd8edc448dd	INFO	CC0 ignored - https://collections.artsmia.org/art/80087',
-    '2022-07-04T07:43:51.274Z	502cf7d2-eb46-53fa-9115-acee7722d618	INFO	CC0 ignored - https://collections.artsmia.org/art/40607',
-    '2022-07-04T07:43:51.259Z	edc0ff56-0db5-5035-9ef7-a46a91df3193	INFO	CC0 ignored - https://collections.artsmia.org/art/135746',
-    '2022-07-04T07:43:34.050Z	a66ec8e2-63f0-537a-a471-93deffaba63c	INFO	CC0 ignored - https://collections.artsmia.org/art/106841',
-    '2022-07-04T07:43:31.186Z	e146f3ff-67b4-5a1b-ba38-a8c3fbe1017b	INFO	CC0 ignored - https://collections.artsmia.org/art/124138',
-    '2022-07-04T07:43:27.336Z	0946cb34-4969-5991-8724-9008d52677b7	INFO	CC0 ignored - https://collections.artsmia.org/art/136457',
-    '2022-07-04T07:43:27.070Z	65c18a52-c561-53d2-a4cf-d16e592f7cb6	INFO	CC0 ignored - https://collections.artsmia.org/art/119894',
-    '2022-07-04T07:43:27.017Z	e146f3ff-67b4-5a1b-ba38-a8c3fbe1017b	INFO	CC0 ignored - https://collections.artsmia.org/art/31412',
-    '2022-07-04T07:43:25.021Z	f3ae36fb-e3d3-5b25-b961-6dc77f81e045	INFO	CC0 ignored - https://collections.artsmia.org/art/40438',
-    '2022-07-04T07:43:23.077Z	0946cb34-4969-5991-8724-9008d52677b7	INFO	CC0 ignored - https://collections.artsmia.org/art/31838',
-    '2022-07-04T07:43:21.430Z	dd8c0f2a-f680-5ccc-9490-54166acdd98a	INFO	CC0 ignored - https://collections.artsmia.org/art/102417',
-    '2022-07-04T07:43:20.813Z	f3ae36fb-e3d3-5b25-b961-6dc77f81e045	INFO	CC0 ignored - https://collections.artsmia.org/art/7111',
-    '2022-07-04T07:43:20.457Z	47d67e87-1080-535a-9417-25bb8ccb583a	INFO	CC0 ignored - https://collections.artsmia.org/art/31839',
-    '2022-07-04T07:43:20.354Z	31200555-defa-55e0-b18b-5e6942b12e80	INFO	CC0 ignored - https://collections.artsmia.org/art/31840',
-    '2022-07-04T07:43:19.237Z	948415d2-bdda-58f3-bfc2-4eee21e356d5	INFO	CC0 ignored - https://collections.artsmia.org/art/57990',
-    '2022-07-04T07:43:18.632Z	76a2fbdc-8003-5ff8-b432-a0e01c44109c	INFO	CC0 ignored - https://collections.artsmia.org/art/81626',
-    '2022-07-04T07:43:17.128Z	dd8c0f2a-f680-5ccc-9490-54166acdd98a	INFO	CC0 ignored - https://collections.artsmia.org/art/132153',
-    '2022-07-04T07:43:14.681Z	bc445422-6b3e-5637-877e-0f1ef7745371	INFO	CC0 ignored - https://collections.artsmia.org/art/87760',
-    '2022-07-04T07:43:13.837Z	7d4bb6ba-82c3-5227-bf22-ed861e8b9947	INFO	CC0 ignored - https://collections.artsmia.org/art/86885',
-    '2022-07-04T07:43:13.370Z	43ba33d4-b272-5d17-9a69-68e82e4b6273	INFO	CC0 ignored - https://collections.artsmia.org/art/80903',
-    '2022-07-04T07:43:10.565Z	a670b90d-787f-515c-8a0e-e231e43aca3c	INFO	CC0 ignored - https://collections.artsmia.org/art/87762',
-    '2022-07-04T07:43:07.196Z	00547f19-2fe6-54b7-af26-2425b3d4ea91	INFO	CC0 ignored - https://collections.artsmia.org/art/101066',
-    '2022-07-04T07:43:07.134Z	5c32cb2d-42ba-5df7-be4d-9011de923019	INFO	CC0 ignored - https://collections.artsmia.org/art/126749',
-    '2022-07-04T07:43:03.001Z	64a4b61d-fc46-54a1-ad15-ed216074fbc5	INFO	CC0 ignored - https://collections.artsmia.org/art/40962',
-  ];
-  let spiltText = strArray.map((item) => 'https://collections.artsmia.org/' + item.split('https://collections.artsmia.org/')[1]);
+  var strArray = [];
+
+  let spiltText = strArray.map((item) => `${item.split("skip scraping ")[1]}`);
+
   const getNotDup = spiltText.filter((value, index, self) => self.indexOf(value) === index);
+  const getNotDup2 = spiltText.filter((value, index, self) => self.indexOf(value) !== index);
+  console.log(getNotDup2);
+  // console.log(getNotDup2);
+  console.log("getNotDup", getNotDup.length);
+  console.log("spiltText", spiltText.length);
   var json = JSON.stringify(getNotDup);
-  fs.writeFile('split-text-mia-01.json', json, function (err) {
+  fs.writeFile("aichicago-downloadlink-batch1.json", json, function (err) {
     if (err) {
       return console.log(err);
     }
 
-    console.log('The file was saved!');
+    console.log("The file was saved!");
   });
 }
 main();
