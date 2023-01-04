@@ -1,5 +1,4 @@
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const fileType = require("file-type");
 const FormData = require("form-data");
 
@@ -24,9 +23,11 @@ const downloadStockvalutFile = async (id) => {
   return [buffer, contentType, imageExtension];
 };
 
-downloadStockvalutFile("191807").then(
+downloadStockvalutFile("https://www.webumenia.sk/en/image/119073/download").then(
   ([imageBuffer, imageMetadata, extension]) => {
     console.log(extension);
+    console.log(imageBuffer);
+    console.log(imageMetadata);
   }
 );
 // console.log(type);
